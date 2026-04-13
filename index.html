@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>極匠卡牌修復室 PRIME CARD LAB</title>
+  <meta name="description" content="極匠卡牌修復室 — 專注高價收藏卡修復與價值提升。運動球員卡、寶可夢、遊戲王、航海王卡牌專業修復服務。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8d48b;
+      --gold-lighter: #f5e6b8;
+      --gold-dark: #8a6d2b;
+      --gold-deep: #6b5420;
+      --bg-primary: #080808;
+      --bg-secondary: #0e0e0e;
+      --bg-tertiary: #141414;
+      --bg-card: rgba(20,20,20,0.8);
+      --text-primary: #f0e6d2;
+      --text-secondary: #8a8070;
+      --text-dim: #5a5248;
+      --accent-red: #a83232;
+      --accent-green: #2d8a50;
+      --border-gold: rgba(201,168,76,0.12);
+      --border-gold-hover: rgba(201,168,76,0.3);
+      --glow-gold: rgba(201,168,76,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.8;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Particle Canvas ── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Shimmer Utility ── */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .text-shimmer {
+      background: linear-gradient(
+        90deg,
+        var(--gold-dark) 0%,
+        var(--gold-light) 25%,
+        var(--gold-lighter) 50%,
+        var(--gold-light) 75%,
+        var(--gold-dark) 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(8,8,8,0.6);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      border-bottom: 1px solid rgba(201,168,76,0.06);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    nav.scrolled {
+      background: rgba(8,8,8,0.88);
+      border-bottom-color: rgba(201,168,76,0.12);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.4), 0 1px 0 rgba(201,168,76,0.08);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 72px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--gold);
+    }
+    .nav-brand img {
+      height: 42px;
+      width: 42px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201,168,76,0.3);
+      box-shadow: 0 0 20px rgba(201,168,76,0.15);
+    }
+    .nav-brand span {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 1.5px;
+      transition: color 0.4s;
+      position: relative;
+      text-transform: uppercase;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transition: width 0.4s;
+    }
+    .nav-links a:hover { color: var(--gold-light); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--gold);
+      transition: 0.3s;
+      border-radius: 1px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 2rem;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 50% 35%, rgba(201,168,76,0.07) 0%, transparent 100%),
+        radial-gradient(ellipse 800px 300px at 50% 80%, rgba(201,168,76,0.03) 0%, transparent 100%),
+        radial-gradient(circle 200px at 20% 20%, rgba(201,168,76,0.02) 0%, transparent 100%),
+        radial-gradient(circle 200px at 80% 70%, rgba(201,168,76,0.02) 0%, transparent 100%);
+      z-index: 1;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to top, var(--bg-primary), transparent);
+      z-index: 2;
+    }
+    .hero-content { position: relative; z-index: 3; }
+
+    .hero-logo-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 2.5rem;
+    }
+    .hero-logo-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .hero-logo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      position: relative;
+      z-index: 1;
+      border: 2px solid rgba(201,168,76,0.2);
+      box-shadow:
+        0 0 40px rgba(201,168,76,0.15),
+        0 0 80px rgba(201,168,76,0.05),
+        inset 0 0 30px rgba(0,0,0,0.3);
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .hero-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 8px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: 8px;
+      line-height: 1.2;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+    .hero h2 {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      letter-spacing: 6px;
+      opacity: 0;
+      animation: fadeUp 1s 0.7s forwards;
+    }
+    .hero-divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 2rem auto;
+      opacity: 0;
+      animation: fadeUp 1s 0.9s forwards;
+    }
+    .hero-tagline {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 420px;
+      margin: 0 auto;
+      letter-spacing: 1px;
+      line-height: 2;
+      opacity: 0;
+      animation: fadeUp 1s 1.1s forwards;
+    }
+    .hero-cta {
+      margin-top: 3rem;
+      display: inline-block;
+      padding: 15px 48px;
+      background: transparent;
+      color: var(--gold);
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      text-decoration: none;
+      text-transform: uppercase;
+      border: 1px solid rgba(201,168,76,0.4);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s;
+      opacity: 0;
+      animation: fadeUp 1s 1.3s forwards;
+    }
+    .hero-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: -1;
+    }
+    .hero-cta:hover {
+      color: #0a0a0a;
+      border-color: var(--gold);
+      box-shadow: 0 0 40px rgba(201,168,76,0.2);
+      transform: translateY(-1px);
+    }
+    .hero-cta:hover::before { opacity: 1; }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 1s 1.8s forwards;
+    }
+    .scroll-hint span {
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scroll-pulse 2s ease-in-out infinite;
+    }
+    @keyframes scroll-pulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.3; transform: scaleY(0.6); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Section common ── */
+    .section-full {
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .section-full.alt-bg { background: var(--bg-secondary); }
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 7rem 2.5rem;
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-title .label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 6px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+    .section-title h2 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 6px;
+    }
+    .section-title .sub {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 300;
+      margin-top: 0.5rem;
+      letter-spacing: 2px;
+    }
+    .gold-line {
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 1.2rem auto 0;
+    }
+
+    /* ── Services ── */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .service-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, var(--glow-gold), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .service-card:hover {
+      border-color: var(--border-gold-hover);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(201,168,76,0.06);
+    }
+    .service-card:hover::before { opacity: 1; }
+    .service-card:hover::after { opacity: 1; }
+    .service-card > * { position: relative; z-index: 1; }
+    .service-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    .service-card h3 {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--gold);
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+      letter-spacing: 2px;
+    }
+    .service-card .en-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .service-card p {
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ── Health Check ── */
+    .healthcheck {
+      max-width: 800px;
+      margin: 0 auto 4rem;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .healthcheck::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .healthcheck-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .healthcheck-header h3 {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+    }
+    .healthcheck-header .hc-en {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      display: block;
+      margin-top: 0.3rem;
+    }
+    .price-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 8px 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gold-light);
+      letter-spacing: 2px;
+    }
+    .healthcheck ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 2rem;
+    }
+    .healthcheck ul li {
+      padding: 0.6rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(201,168,76,0.04);
+    }
+    .healthcheck ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    /* ── Restoration Grid ── */
+    .restore-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .restore-block {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .restore-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+    }
+    .restore-block.can::before { background: linear-gradient(to bottom, var(--accent-green), transparent); }
+    .restore-block.cant::before { background: linear-gradient(to bottom, var(--accent-red), transparent); }
+    .restore-block h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .restore-block.can h3 { color: #4ade80; }
+    .restore-block.cant h3 { color: #f87171; }
+    .restore-block .badge {
+      font-size: 0.6rem;
+      padding: 3px 10px;
+      border-radius: 1px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .restore-block.can .badge { background: rgba(45,138,80,0.15); color: #4ade80; border: 1px solid rgba(45,138,80,0.3); }
+    .restore-block.cant .badge { background: rgba(168,50,50,0.15); color: #f87171; border: 1px solid rgba(168,50,50,0.3); }
+    .restore-block ul { list-style: none; }
+    .restore-block ul li {
+      padding: 0.55rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(255,255,255,0.02);
+    }
+    .restore-block ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+    }
+    .restore-block.can ul li::before { background: var(--accent-green); }
+    .restore-block.cant ul li::before { background: var(--accent-red); }
+    .restore-note {
+      margin-top: 1.2rem;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    /* ── Color Service ── */
+    .color-service {
+      max-width: 600px;
+      margin: 3rem auto 0;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .color-service h4 {
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+    }
+    .color-service .cs-note {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 0.4rem;
+    }
+
+    /* ── Pricing ── */
+    .pricing-table-wrap {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    .pricing-table-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .pricing-table th {
+      background: rgba(201,168,76,0.06);
+      color: var(--gold);
+      text-align: left;
+      padding: 1.2rem 2rem;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      font-weight: 500;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border-gold);
+    }
+    .pricing-table td {
+      padding: 1.1rem 2rem;
+      border-bottom: 1px solid rgba(201,168,76,0.04);
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+    }
+    .pricing-table tr:last-child td { border-bottom: none; }
+    .pricing-table tr {
+      transition: background 0.3s;
+    }
+    .pricing-table tbody tr:hover { background: rgba(201,168,76,0.03); }
+    .pricing-table .price-cell {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-light);
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .pricing-extras {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    .extra-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .extra-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .extra-card:hover { border-color: var(--border-gold-hover); }
+    .extra-card:hover::before { opacity: 1; }
+    .extra-card .ec-label {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .extra-card .ec-price {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 2px;
+    }
+    .extra-card .ec-note {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 0.5rem;
+    }
+
+    /* ── Process ── */
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .process-grid::before {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: 12.5%;
+      right: 12.5%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold), transparent);
+      opacity: 0.3;
+    }
+    .process-step {
+      text-align: center;
+      padding: 0 0.8rem;
+      position: relative;
+    }
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      color: var(--gold);
+      background: var(--bg-secondary);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1.2rem;
+      transition: all 0.4s;
+    }
+    .process-step:hover .step-num {
+      background: var(--gold);
+      color: var(--bg-primary);
+      box-shadow: 0 0 20px rgba(201,168,76,0.3);
+    }
+    .process-step h4 {
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      letter-spacing: 1px;
+    }
+    .process-step p {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ── Notice ── */
+    .notice-box {
+      max-width: 750px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-left: 2px solid var(--gold);
+      border-radius: 0 2px 2px 0;
+      padding: 2.5rem 3rem;
+    }
+    .notice-box h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .notice-box ul { list-style: none; }
+    .notice-box ul li {
+      padding: 0.6rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 300;
+      border-bottom: 1px solid rgba(201,168,76,0.04);
+    }
+    .notice-box ul li:last-child { border-bottom: none; }
+    .notice-box ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    /* ── Contact ── */
+    .contact-content {
+      text-align: center;
+    }
+    .contact-content .tagline {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+    .contact-content .tagline-sub {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 2.5rem;
+    }
+    .contact-cta {
+      display: inline-block;
+      padding: 16px 52px;
+      background: transparent;
+      color: var(--gold);
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      text-decoration: none;
+      text-transform: uppercase;
+      border: 1px solid rgba(201,168,76,0.4);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s;
+    }
+    .contact-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: -1;
+    }
+    .contact-cta:hover {
+      color: #0a0a0a;
+      border-color: var(--gold);
+      box-shadow: 0 0 40px rgba(201,168,76,0.2);
+    }
+    .contact-cta:hover::before { opacity: 1; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      border-top: 1px solid rgba(201,168,76,0.06);
+    }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+      .process-grid::before { display: none; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        width: 100%;
+        background: rgba(8,8,8,0.97);
+        backdrop-filter: blur(20px);
+        padding: 2rem 2.5rem;
+        gap: 1.5rem;
+        border-bottom: 1px solid rgba(201,168,76,0.08);
+      }
+      .nav-toggle { display: flex; }
+      .restore-grid { grid-template-columns: 1fr; }
+      .pricing-extras { grid-template-columns: 1fr; }
+      .color-service { flex-direction: column; text-align: center; }
+      .hero-logo { width: 160px; height: 160px; }
+      .section-inner { padding: 5rem 1.5rem; }
+      .healthcheck ul { grid-template-columns: 1fr; }
+      .healthcheck { padding: 2rem; }
+      .notice-box { padding: 2rem; }
+    }
+    @media (max-width: 500px) {
+      .service-grid { grid-template-columns: 1fr; }
+      .process-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Particle Background -->
+<canvas id="particles"></canvas>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <img src="logo.jpg" alt="極匠卡牌修復室">
+      <span>PRIME CARD LAB</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#services">服務範圍</a></li>
+      <li><a href="#restoration">修復項目</a></li>
+      <li><a href="#pricing">收費標準</a></li>
+      <li><a href="#process">服務流程</a></li>
+      <li><a href="#contact">聯繫我們</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="選單">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-logo-wrap">
+      <img src="logo.jpg" alt="極匠卡牌修復室" class="hero-logo">
+    </div>
+    <div class="hero-subtitle">Card Restoration Studio</div>
+    <h1 class="text-shimmer">PRIME CARD LAB</h1>
+    <h2>極匠卡牌修復室</h2>
+    <div class="hero-divider"></div>
+    <p class="hero-tagline">專注高價收藏卡修復與價值提升<br>以極致工藝守護每一張珍貴卡牌</p>
+    <a href="#contact" class="hero-cta">立即諮詢</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Services -->
+<div class="section-full alt-bg" id="services">
+  <div class="section-inner">
+    <div class="section-title reveal">
+      <span class="label">What We Do</span>
+      <h2>SERVICE</h2>
+      <div class="sub">服務範圍</div>
+      <div class="gold-line"></div>
+    </div>
+    <div class="service-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <span class="service-icon">🏀</span>
+        <h3>運動球員卡</h3>
+        <div class="en-name">Sports Cards</div>
+        <p>NBA / MLB 等職業運動收藏卡之修復與維護</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <span class="service-icon">⚡</span>
+        <h3>寶可夢</h3>
+        <div class="en-name">Pok&eacute;mon</div>
+        <p>寶可夢卡牌全系列修復與品相提升服務</p>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <span class="service-icon">🃏</span>
+        <h3>遊戲王</h3>
+        <div class="en-name">Yu-Gi-Oh!</div>
+        <p>遊戲王卡牌專業修復，重現卡牌原始光澤</p>
+      </div>
+      <div class="service-card reveal reveal-delay-4">
+        <span class="service-icon">🏴‍☠️</span>
+        <h3>航海王</h3>
+        <div class="en-name">ONE PIECE</div>
+        <p>ONE PIECE 卡牌修復與收藏價值提升</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Restoration -->
+<div class="section-full" id="restoration">
+  <div class="section-inner">
+    <div class="section-title reveal">
+      <span class="label">Our Expertise</span>
+      <h2>RESTORATION</h2>
+      <div class="sub">修復項目</div>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- Health Check -->
+    <div class="healthcheck reveal">
+      <div class="healthcheck-header">
+        <div>
+          <h3>卡片健檢</h3>
+          <span class="hc-en">HEALTH CHECK</span>
+        </div>
+        <div class="price-badge">$100 / 張</div>
+      </div>
+      <ul>
+        <li>基礎清潔（指紋 / 表面污漬）</li>
+        <li>顯微鏡檢測（刮痕 / 白邊 / 壓痕）</li>
+        <li>判斷卡片是否值得修復</li>
+        <li>完整損傷狀態報告</li>
+      </ul>
+    </div>
+
+    <!-- Can / Can't -->
+    <div class="restore-grid">
+      <div class="restore-block can reveal">
+        <h3><span class="badge">Repairable</span> 可修復項目</h3>
+        <ul>
+          <li>輕微刮痕</li>
+          <li>壓痕 / 凹痕</li>
+          <li>輕微摺痕（未斷裂）</li>
+          <li>白邊優化（未掉漆）</li>
+          <li>表面髒污</li>
+          <li>卡片平整修復</li>
+        </ul>
+      </div>
+      <div class="restore-block cant reveal">
+        <h3><span class="badge">Irreparable</span> 無法修復項目</h3>
+        <ul>
+          <li>割痕 / 破裂（紙張斷裂）</li>
+          <li>掉漆（大面積）</li>
+          <li>缺角 / 缺損</li>
+          <li>嚴重水損 / 變形</li>
+        </ul>
+        <p class="restore-note">此類卡片僅建議保存，不建議修復</p>
+      </div>
+    </div>
+
+    <!-- Color Service -->
+    <div class="color-service reveal">
+      <div>
+        <h4>補色服務</h4>
+        <div class="cs-note">補色服務無法通過鑑定，以自己收藏好看為主</div>
+      </div>
+      <div class="price-badge">$500 / 張</div>
+    </div>
+  </div>
+</div>
+
+<!-- Pricing -->
+<div class="section-full alt-bg" id="pricing">
+  <div class="section-inner">
+    <div class="section-title reveal">
+      <span class="label">Transparent Pricing</span>
+      <h2>PRICING</h2>
+      <div class="sub">收費標準</div>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="pricing-table-wrap reveal">
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>卡片價值</th>
+            <th>修復費用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1 萬以下</td>
+            <td class="price-cell">$700</td>
+          </tr>
+          <tr>
+            <td>1 萬 – 2 萬</td>
+            <td class="price-cell">$1,400</td>
+          </tr>
+          <tr>
+            <td>2 萬 – 3 萬</td>
+            <td class="price-cell">$3,000</td>
+          </tr>
+          <tr>
+            <td>3 萬以上</td>
+            <td class="price-cell">卡價 10%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pricing-extras">
+      <div class="extra-card reveal">
+        <div class="ec-label">Express Service</div>
+        <div class="ec-price">+$500</div>
+        <div class="ec-note">急件處理費用</div>
+      </div>
+      <div class="extra-card reveal">
+        <div class="ec-label">Health Check</div>
+        <div class="ec-price">$100</div>
+        <div class="ec-note">含基礎清潔與檢測</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Process -->
+<div class="section-full" id="process">
+  <div class="section-inner">
+    <div class="section-title reveal">
+      <span class="label">How It Works</span>
+      <h2>PROCESS</h2>
+      <div class="sub">服務流程</div>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="process-grid">
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">01</div>
+        <h4>訊息溝通</h4>
+        <p>私訊討論修復區域與可行性</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-num">02</div>
+        <h4>卡片健檢</h4>
+        <p>清潔 + 顯微鏡全面檢測</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="step-num">03</div>
+        <h4>損傷分析</h4>
+        <p>記錄瑕疵，產出分析報告</p>
+      </div>
+      <div class="process-step reveal reveal-delay-4">
+        <div class="step-num">04</div>
+        <h4>修復方案</h4>
+        <p>提出最佳修復建議方案</p>
+      </div>
+    </div>
+    <div class="process-grid" style="margin-top: 2.5rem;">
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">05</div>
+        <h4>報價確認</h4>
+        <p>透明報價，確認後開始</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-num">06</div>
+        <h4>專業修復</h4>
+        <p>極致工藝修復處理</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="step-num">07</div>
+        <h4>前後報告</h4>
+        <p>完整修復前後對比紀錄</p>
+      </div>
+      <div class="process-step reveal reveal-delay-4">
+        <div class="step-num">08</div>
+        <h4>完成交付</h4>
+        <p>安全包裝，交還卡片</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notice -->
+<div class="section-full alt-bg">
+  <div class="section-inner">
+    <div class="section-title reveal">
+      <span class="label">Important</span>
+      <h2>NOTICE</h2>
+      <div class="sub">注意事項</div>
+      <div class="gold-line"></div>
+    </div>
+    <div class="notice-box reveal">
+      <h3>Disclaimer</h3>
+      <ul>
+        <li>本工作室提供專業修復服務，不保證評級分數提升</li>
+        <li>修復可能影響第三方鑑定結果</li>
+        <li>修復前皆會進行風險說明與確認</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="section-full" id="contact">
+  <div class="section-inner">
+    <div class="section-title reveal">
+      <span class="label">Get In Touch</span>
+      <h2>CONTACT</h2>
+      <div class="sub">聯繫我們</div>
+      <div class="gold-line"></div>
+    </div>
+    <div class="contact-content reveal">
+      <p class="tagline">想修復你珍藏的卡片？</p>
+      <p class="tagline-sub">立即私訊我們，開始專業諮詢</p>
+      <a href="https://www.instagram.com/" class="contact-cta" target="_blank" rel="noopener">Instagram 私訊諮詢</a>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2025 PRIME CARD LAB 極匠卡牌修復室 &mdash; All Rights Reserved.</p>
+</footer>
+
+<script>
+  // ── Particle System ──
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let w, h;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * w;
+      this.y = Math.random() * h;
+      this.size = Math.random() * 1.5 + 0.5;
+      this.speedY = -(Math.random() * 0.3 + 0.1);
+      this.speedX = (Math.random() - 0.5) * 0.15;
+      this.opacity = Math.random() * 0.4 + 0.1;
+      this.fadeSpeed = Math.random() * 0.003 + 0.001;
+      this.growing = Math.random() > 0.5;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.opacity += this.growing ? this.fadeSpeed : -this.fadeSpeed;
+      if (this.opacity >= 0.5) this.growing = false;
+      if (this.opacity <= 0.05) this.growing = true;
+      if (this.y < -10 || this.x < -10 || this.x > w + 10) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(201,168,76,${this.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // ── Nav Scroll ──
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
+
+  // ── Mobile Menu ──
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => links.classList.remove('open'))
+  );
+
+  // ── Scroll Reveal ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── Smooth anchor ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
