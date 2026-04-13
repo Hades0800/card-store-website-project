@@ -984,20 +984,23 @@
       .notice-box { padding: 2rem; }
     }
     @media (max-width: 500px) {
+      .service-grid-wrap {
+        overflow: hidden;
+        position: relative;
+      }
       .service-grid {
         display: flex;
-        overflow: hidden;
         gap: 0;
-        padding-bottom: 1.5rem;
-        position: relative;
-        touch-action: pan-x;
+        padding: 1rem 0 1.5rem;
+        will-change: transform;
       }
       .service-grid .service-card {
-        min-width: 75vw;
+        min-width: 80vw;
         flex-shrink: 0;
+        margin: 0 2vw;
         transition: transform 0.4s ease, opacity 0.4s ease;
         opacity: 0.4;
-        transform: scale(0.9);
+        transform: scale(0.88);
       }
       .service-grid .service-card.carousel-active {
         opacity: 1;
@@ -1012,7 +1015,7 @@
         display: flex;
         justify-content: center;
         gap: 8px;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
       .carousel-dot {
         width: 8px;
@@ -1081,6 +1084,7 @@
       <div class="sub">服務範圍</div>
       <div class="gold-line"></div>
     </div>
+    <div class="service-grid-wrap">
     <div class="service-grid">
       <div class="service-card reveal reveal-delay-1">
         <div class="card-back" style="--glow-color:rgba(200,80,40,0.4)"><canvas id="card-sports" width="36" height="50"></canvas></div>
@@ -1106,6 +1110,7 @@
         <div class="en-name">ONE PIECE</div>
         <p>ONE PIECE 卡牌修復與收藏價值提升</p>
       </div>
+    </div>
     </div>
   </div>
 </div>
@@ -1575,13 +1580,14 @@ function drawCardBase(ctx, w, h, bg1, bg2, accent) {
 (function() {
   if (window.innerWidth > 500) return;
 
+  const wrap = document.querySelector('.service-grid-wrap');
   const grid = document.querySelector('.service-grid');
-  if (!grid) return;
+  if (!grid || !wrap) return;
   const cards = Array.from(grid.querySelectorAll('.service-card'));
   const total = cards.length;
   if (total === 0) return;
 
-  // Clone cards for infinite loop (prepend last, append first)
+  // Clone cards for infinite loop
   const firstClone = cards[0].cloneNode(true);
   const lastClone = cards[total - 1].cloneNode(true);
   firstClone.classList.add('clone');
@@ -1590,7 +1596,7 @@ function drawCardBase(ctx, w, h, bg1, bg2, accent) {
   grid.insertBefore(lastClone, cards[0]);
 
   const allCards = Array.from(grid.querySelectorAll('.service-card'));
-  let currentIndex = 1; // Start at first real card (index 1 because of prepended clone)
+  let currentIndex = 1;
 
   // Add dots
   const dotsWrap = document.createElement('div');
@@ -1602,24 +1608,25 @@ function drawCardBase(ctx, w, h, bg1, bg2, accent) {
     dot.addEventListener('click', () => goTo(i + 1));
     dotsWrap.appendChild(dot);
   }
-  grid.parentNode.insertBefore(dotsWrap, grid.nextSibling);
+  wrap.parentNode.insertBefore(dotsWrap, wrap.nextSibling);
   const dots = dotsWrap.querySelectorAll('.carousel-dot');
 
-  function getCardWidth() {
-    return allCards[0].offsetWidth;
+  function getCardFullWidth() {
+    const card = allCards[0];
+    const style = getComputedStyle(card);
+    return card.offsetWidth + parseFloat(style.marginLeft) + parseFloat(style.marginRight);
   }
 
   function updateCarousel(animate) {
-    const cardW = getCardWidth();
-    const offset = currentIndex * cardW - (grid.offsetWidth - cardW) / 2;
+    const cardW = getCardFullWidth();
+    const wrapW = wrap.offsetWidth;
+    const offset = currentIndex * cardW - (wrapW - cardW) / 2;
     grid.style.transition = animate ? 'transform 0.4s ease' : 'none';
     grid.style.transform = 'translateX(' + (-offset) + 'px)';
 
-    // Update active states
     allCards.forEach(c => c.classList.remove('carousel-active'));
     if (allCards[currentIndex]) allCards[currentIndex].classList.add('carousel-active');
 
-    // Update dots
     const realIndex = ((currentIndex - 1) % total + total) % total;
     dots.forEach((d, i) => d.classList.toggle('active', i === realIndex));
   }
@@ -1629,7 +1636,6 @@ function drawCardBase(ctx, w, h, bg1, bg2, accent) {
     updateCarousel(true);
   }
 
-  // Handle infinite loop jump
   grid.addEventListener('transitionend', () => {
     if (currentIndex === 0) {
       currentIndex = total;
@@ -1643,14 +1649,14 @@ function drawCardBase(ctx, w, h, bg1, bg2, accent) {
   // Touch swipe
   let startX = 0, startY = 0, isDragging = false, isHorizontal = null;
 
-  grid.addEventListener('touchstart', (e) => {
+  wrap.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     isDragging = true;
     isHorizontal = null;
   }, { passive: true });
 
-  grid.addEventListener('touchmove', (e) => {
+  wrap.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     const dx = e.touches[0].clientX - startX;
     const dy = e.touches[0].clientY - startY;
@@ -1660,7 +1666,7 @@ function drawCardBase(ctx, w, h, bg1, bg2, accent) {
     if (isHorizontal) e.preventDefault();
   }, { passive: false });
 
-  grid.addEventListener('touchend', (e) => {
+  wrap.addEventListener('touchend', (e) => {
     if (!isDragging) return;
     isDragging = false;
     const dx = e.changedTouches[0].clientX - startX;
