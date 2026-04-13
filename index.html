@@ -214,17 +214,16 @@
       50% { opacity: 1; transform: scale(1.05); }
     }
     .hero-logo {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      object-fit: cover;
+      width: 320px;
+      height: auto;
+      border-radius: 16px;
+      object-fit: contain;
       position: relative;
       z-index: 1;
       border: 2px solid rgba(201,168,76,0.2);
       box-shadow:
         0 0 40px rgba(201,168,76,0.15),
-        0 0 80px rgba(201,168,76,0.05),
-        inset 0 0 30px rgba(0,0,0,0.3);
+        0 0 80px rgba(201,168,76,0.05);
       animation: float 5s ease-in-out infinite;
     }
     @keyframes float {
@@ -951,7 +950,7 @@
       .restore-grid { grid-template-columns: 1fr; }
       .pricing-extras { grid-template-columns: 1fr; }
       .color-service { flex-direction: column; text-align: center; }
-      .hero-logo { width: 160px; height: 160px; }
+      .hero-logo { width: 240px; height: auto; }
       .section-inner { padding: 5rem 1.5rem; }
       .healthcheck ul { grid-template-columns: 1fr; }
       .healthcheck { padding: 2rem; }
