@@ -983,7 +983,22 @@
       .notice-box { padding: 2rem; }
     }
     @media (max-width: 500px) {
-      .service-grid { grid-template-columns: 1fr; }
+      .service-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding-bottom: 1rem;
+      }
+      .service-grid::-webkit-scrollbar { height: 4px; }
+      .service-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 2px; }
+      .service-grid::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+      .service-card {
+        min-width: 75vw;
+        flex-shrink: 0;
+        scroll-snap-align: center;
+      }
       .process-grid { grid-template-columns: 1fr; gap: 1.5rem; }
     }
   </style>
