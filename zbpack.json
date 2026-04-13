@@ -1,4 +1,5 @@
 {
+  "zbpack": "static",
   "static": {
     "dir": ".",
     "spa": false
