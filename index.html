@@ -884,6 +884,147 @@
       background: var(--gold);
     }
 
+    /* ── Consent Agreement ── */
+    .consent-wrap {
+      max-width: 750px;
+      margin: 2rem auto 0;
+    }
+    .consent-toggle {
+      width: 100%;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 2px;
+      padding: 1.3rem 2rem;
+      color: var(--gold-light);
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .consent-toggle::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.6;
+    }
+    .consent-toggle:hover {
+      border-color: var(--border-gold-hover);
+      background: rgba(30,30,30,0.8);
+    }
+    .consent-toggle .arrow {
+      transition: transform 0.4s;
+      color: var(--gold);
+      font-size: 0.9rem;
+    }
+    .consent-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
+    .consent-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border-left: 1px solid var(--border-gold);
+      border-right: 1px solid var(--border-gold);
+      border-bottom: 1px solid var(--border-gold);
+      border-radius: 0 0 2px 2px;
+      margin-top: -1px;
+    }
+    .consent-panel.open {
+      max-height: 2500px;
+    }
+    .consent-inner {
+      padding: 2rem 2.5rem 2.5rem;
+    }
+    .consent-section {
+      margin-bottom: 2.5rem;
+    }
+    .consent-section:last-child {
+      margin-bottom: 0;
+    }
+    .consent-section h4 {
+      font-family: 'Noto Serif TC', serif;
+      color: var(--gold-light);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      margin-bottom: 0.5rem;
+    }
+    .consent-section .en-title {
+      font-family: 'Cinzel', serif;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
+    }
+    .consent-section p.intro {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.9;
+      margin-bottom: 1.3rem;
+      font-weight: 400;
+    }
+    .consent-list {
+      list-style: none;
+      counter-reset: item;
+    }
+    .consent-list li {
+      padding: 0.9rem 0 0.9rem 2.3rem;
+      position: relative;
+      counter-increment: item;
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      font-weight: 400;
+      line-height: 1.8;
+      border-bottom: 1px solid rgba(201,168,76,0.06);
+    }
+    .consent-list li:last-child {
+      border-bottom: none;
+    }
+    .consent-list li::before {
+      content: counter(item, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 0.9rem;
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .consent-list.bullet li {
+      padding-left: 1.5rem;
+    }
+    .consent-list.bullet li::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      top: 1.4rem;
+      left: 0;
+    }
+    .consent-list li strong {
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+    .consent-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
+      margin: 2rem 0;
+    }
+
     /* ── Contact ── */
     .contact-content {
       text-align: center;
@@ -1308,6 +1449,48 @@
         <li>修復前皆會進行風險說明與確認</li>
       </ul>
     </div>
+
+    <div class="consent-wrap reveal">
+      <button class="consent-toggle" id="consentToggle" aria-expanded="false">
+        <span>委託修復同意書</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="consent-panel" id="consentPanel">
+        <div class="consent-inner">
+
+          <div class="consent-section">
+            <h4>卡牌修復服務：委託須知與風險協議</h4>
+            <div class="en-title">Service Terms &amp; Risk Agreement</div>
+            <p class="intro">感謝您對本工作室專業技術的信任。卡牌修復是一項針對紙質纖維進行微觀調整的精細作業，具備高度不可逆性。為保障雙方權益，委託前請詳閱並確認以下聲明：</p>
+            <ol class="consent-list">
+              <li><strong>工藝侷限性：</strong>修復目標在於「外觀優化」而非「重製」。受限於原始損傷程度與紙質狀況，修復後可能仍會保有部分自然瑕疵，無法確保達到「全新品（Gem Mint）」之品相。</li>
+              <li><strong>結構性不可逆風險：</strong>任何物理或化學修復程序皆伴隨風險，包含但不限於紙質纖維變化、墨色色差、或修復處與原卡面之銜接感。</li>
+              <li><strong>第三方評級影響：</strong>請注意，經過人工處理之卡牌，在 PSA、BGS 等第三方鑑定機構中可能被標註為「Altered（經更動）」或影響最終評分，其市場價值變動風險需由委託人自行承擔。</li>
+              <li><strong>高價值卡牌評估：</strong>針對市場行情較高之稀有卡牌，建議委託人於送件前審慎考量。一旦開始修復流程，即代表您同意承擔相關風險。</li>
+              <li><strong>補償協議：</strong>若修復過程中產生「非原先存在」之新損傷，本工作室將提供該卡牌市價（國際市場價格）之 20% 作為補償上限，委託人同意不另行追究其他損害賠償。</li>
+              <li><strong>結果認定：</strong>修復成果之優劣具備審美主觀性，本工作室將以專業技術標準執行，恕不接受以「不符個人期待」為由要求退費或索賠。</li>
+            </ol>
+          </div>
+
+          <div class="consent-divider"></div>
+
+          <div class="consent-section">
+            <h4>委託修復同意書</h4>
+            <div class="en-title">Consent Form</div>
+            <p class="intro">在提交卡牌修復申請前，請務必理解以下風險說明：</p>
+            <ul class="consent-list bullet">
+              <li><strong>修復非還原：</strong>目的是改善而非消除。摺痕、壓傷、白邊等損傷在修復後仍可能存在殘跡。</li>
+              <li><strong>風險承擔：</strong>紙質修復具備不可預期性，過程可能導致色澤微調或結構變化。</li>
+              <li><strong>鑑定風險：</strong>本工作室不保證修復後能通過任何第三方鑑定或取得特定分數。</li>
+              <li><strong>高價卡提醒：</strong>價值認定具主觀性，高價卡片請自行評估損益平衡，本工作室不對修復後的市場價值波動負責。</li>
+              <li><strong>賠償準則：</strong>若不幸產生修復意外造成新傷，賠償金額固定為該卡裸卡行情（國際市場價格）之 20%，並以該金額為法律責任上限。</li>
+              <li><strong>最終認定：</strong>委託即代表認同本工作室之修復工藝與判斷，不接受主觀審美差異之爭議。</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1397,6 +1580,17 @@
   links.querySelectorAll('a').forEach(a =>
     a.addEventListener('click', () => links.classList.remove('open'))
   );
+
+  // ── Consent Agreement Toggle ──
+  const consentToggle = document.getElementById('consentToggle');
+  const consentPanel = document.getElementById('consentPanel');
+  if (consentToggle && consentPanel) {
+    consentToggle.addEventListener('click', () => {
+      const isOpen = consentPanel.classList.toggle('open');
+      consentToggle.classList.toggle('open', isOpen);
+      consentToggle.setAttribute('aria-expanded', isOpen);
+    });
+  }
 
   // ── Scroll Reveal ──
   const observer = new IntersectionObserver((entries) => {
